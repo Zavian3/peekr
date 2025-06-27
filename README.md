@@ -55,9 +55,49 @@ streamlit run app.py
 - 🗺️ Geographic distribution
 - 📬 Email communication tracking
 
-## Deployment
+## Deployment on Streamlit Cloud
 
-For deployment on Streamlit Cloud, add your credentials to the Streamlit secrets management instead of using environment variables.
+### 1. Push to GitHub
+```bash
+git add .
+git commit -m "Prepare for Streamlit deployment"
+git push origin main
+```
+
+### 2. Deploy on Streamlit Cloud
+1. Go to [share.streamlit.io](https://share.streamlit.io)
+2. Sign in with your GitHub account
+3. Click "New app"
+4. Select your repository: `Zavian3/peekr`
+5. Set the main file path: `app.py`
+6. Click "Deploy"
+
+### 3. Configure Secrets
+After deployment, go to your app settings and add your Google Cloud credentials:
+
+1. In your Streamlit Cloud app, click the menu (⋮) → "Settings"
+2. Go to the "Secrets" tab
+3. Add your Google Cloud Service Account credentials in TOML format:
+
+```toml
+[gcp_service_account]
+type = "service_account"
+project_id = "your-project-id"
+private_key_id = "your-private-key-id"
+private_key = "-----BEGIN PRIVATE KEY-----\nyour-private-key-here\n-----END PRIVATE KEY-----"
+client_email = "your-service-account@your-project.iam.gserviceaccount.com"
+client_id = "your-client-id"
+auth_uri = "https://accounts.google.com/o/oauth2/auth"
+token_uri = "https://oauth2.googleapis.com/token"
+auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
+client_x509_cert_url = "https://www.googleapis.com/robot/v1/metadata/x509/your-service-account%40your-project.iam.gserviceaccount.com"
+universe_domain = "googleapis.com"
+```
+
+4. Click "Save"
+
+### 4. Share Your Google Sheet
+Make sure to share your Google Sheet with the service account email address (found in `client_email`).
 
 ## Security Note
 
