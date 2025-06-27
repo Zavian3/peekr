@@ -388,7 +388,7 @@ def create_email_flow_chart(leads_df):
     return fig
 
 def main():
-    st.markdown('<h1 class="main-header">🎯 Peekr Client Outreach Agent</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">🎯 Peekr\'s Client Outreach Agent</h1>', unsafe_allow_html=True)
     
     if st.button("🔄 Refresh Data"):
         # Clear cache
