@@ -14,7 +14,7 @@ load_dotenv()
 
 # Page configuration
 st.set_page_config(
-    page_title="Peekr Client Outreach Agent",
+    page_title="Peekr's Client Outreach Agent",
     page_icon="🎯",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -550,7 +550,7 @@ def main():
     st.markdown(
         """
         <div class='footer-style'>
-            <p>🎯 Peekr Client Outreach Agent | by Peekr</p>
+            <p>Client Outreach Agent | by Peekr</p>
         </div>
         """,
         unsafe_allow_html=True
