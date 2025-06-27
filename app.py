@@ -7,6 +7,10 @@ import gspread
 import json
 import os
 from google.oauth2.service_account import Credentials
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Page configuration
 st.set_page_config(
