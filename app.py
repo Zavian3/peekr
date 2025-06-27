@@ -4,7 +4,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+import json
+import os
+from google.oauth2.service_account import Credentials
 
 # Page configuration
 st.set_page_config(
@@ -48,9 +50,36 @@ st.markdown("""
 
 @st.cache_data
 def load_data_from_gsheet():
-    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_name("leads-peeker-bot.json", scope)
-    client = gspread.authorize(creds)
+    # Try to get credentials from Streamlit secrets first, then environment variables
+    try:
+        if hasattr(st, 'secrets') and 'gcp_service_account' in st.secrets:
+            # Use Streamlit secrets (for deployment)
+            credentials_info = dict(st.secrets["gcp_service_account"])
+        else:
+            # Use environment variables (for local development)
+            credentials_info = {
+                "type": "service_account",
+                "project_id": os.getenv("GCP_PROJECT_ID"),
+                "private_key_id": os.getenv("GCP_PRIVATE_KEY_ID"),
+                "private_key": os.getenv("GCP_PRIVATE_KEY", "").replace('\\n', '\n'),
+                "client_email": os.getenv("GCP_CLIENT_EMAIL"),
+                "client_id": os.getenv("GCP_CLIENT_ID"),
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                "client_x509_cert_url": f"https://www.googleapis.com/robot/v1/metadata/x509/{os.getenv('GCP_CLIENT_EMAIL', '').replace('@', '%40')}",
+                "universe_domain": "googleapis.com"
+            }
+        
+        # Create credentials from the info
+        scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+        creds = Credentials.from_service_account_info(credentials_info, scopes=scope)
+        client = gspread.authorize(creds)
+        
+    except Exception as e:
+        st.error(f"Error loading credentials: {str(e)}")
+        st.info("Please set up your Google Cloud Service Account credentials as environment variables or Streamlit secrets.")
+        st.stop()
 
     spreadsheet_id = "1_SlKC3SkL90lYf2i_lELZrZQvh2tdMUaZSKe5_nG4WQ"
     worksheet = client.open_by_key(spreadsheet_id).worksheet("Incoming Leads")
